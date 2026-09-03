@@ -4,6 +4,10 @@
 
 Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level execution (**Daily habits, chores, appointments, and work focus tasks**).
 
+<p align="center">
+  <img src="docs/images/screenshot.png" alt="Horizon Planner Screenshot" width="100%" />
+</p>
+
 ---
 
 ## Key Features
