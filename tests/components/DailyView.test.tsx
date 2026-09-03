@@ -91,7 +91,7 @@ describe('DailyView Component', () => {
     );
 
     // Morning Briefing
-    expect(screen.getByText(/Daily Smart Briefing/i)).toBeDefined();
+    expect(screen.getAllByText(/Daily Briefing/i).length).toBeGreaterThan(0);
 
     // Appointment on timeline
     expect(screen.getAllByText(/Doctor's Appointment/i).length).toBeGreaterThan(0);

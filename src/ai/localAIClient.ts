@@ -229,25 +229,25 @@ Return ONLY pure JSON.`;
     const completedTasks = tasks.filter(t => t.status === 'COMPLETED').length;
     const completedHabits = habits.filter(h => h.completedToday).length;
 
-    let briefing = `☀️ **Daily Briefing for ${dateStr}**\n\n`;
+    let briefing = `**Daily Briefing for ${dateStr}**\n\n`;
 
     if (urgentTasks.length > 0) {
-      briefing += `🚨 **Top Priority**: You have ${urgentTasks.length} urgent work item(s), starting with *"${urgentTasks[0].title}"*.\n`;
+      briefing += `**Top Priority**: You have ${urgentTasks.length} urgent work item(s), starting with *"${urgentTasks[0].title}"*.\n`;
     }
 
     if (appointments.length > 0) {
       const apptList = appointments.map(a => `${a.scheduledTime ? `at ${a.scheduledTime}` : ''} *"${a.title}"*`).join(', ');
-      briefing += `📅 **Schedule**: ${appointments.length} appointment(s) today (${apptList}).\n`;
+      briefing += `**Schedule**: ${appointments.length} appointment(s) today (${apptList}).\n`;
     } else {
-      briefing += `📅 **Schedule**: No fixed appointments today. Perfect for uninterrupted focus time!\n`;
+      briefing += `**Schedule**: No fixed appointments today. Perfect for uninterrupted focus time.\n`;
     }
 
-    briefing += `🌱 **Habits & Chores**: ${completedHabits}/${habits.length} habits completed so far. ${dueToday.length} task(s) on deck.\n`;
+    briefing += `**Habits & Chores**: ${completedHabits}/${habits.length} habits completed so far. ${dueToday.length} task(s) on deck.\n`;
 
     if (completedTasks > 0) {
-      briefing += `✨ Great momentum! Already completed ${completedTasks} task(s) today.`;
+      briefing += `Great momentum! Already completed ${completedTasks} task(s) today.`;
     } else {
-      briefing += `💡 *Tip*: Start with a 45-minute focus session before checking communications.`;
+      briefing += `*Tip*: Start with a 45-minute focus session before checking communications.`;
     }
 
     return briefing;

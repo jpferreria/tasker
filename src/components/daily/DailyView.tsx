@@ -4,7 +4,7 @@ import { DailyTimeSchedule } from './DailyTimeSchedule';
 import { DailyHabitsList } from './DailyHabitsList';
 import { DailyWorkMatrix } from './DailyWorkMatrix';
 import { DailyChoresList } from './DailyChoresList';
-import { Sparkles, ChevronDown, ChevronUp, Bot, SunMedium } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Bot } from 'lucide-react';
 import { localAI } from '../../ai/localAIClient';
 
 interface DailyViewProps {
@@ -35,21 +35,16 @@ export const DailyView: React.FC<DailyViewProps> = ({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Smart Morning Briefing Banner */}
-      <div className="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-2xl p-4 shadow-xl">
+      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 shadow-inner">
-              <SunMedium className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-                <span>Daily Smart Briefing</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                  Edge AI
-                </span>
-              </h2>
-              <p className="text-xs text-slate-400">On-device schedule analysis and priority highlights</p>
-            </div>
+          <div>
+            <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+              <span>Daily Briefing</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                Edge AI
+              </span>
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">Schedule analysis and priority highlights</p>
           </div>
           <button
             onClick={() => setShowBriefing(!showBriefing)}
