@@ -54,12 +54,23 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Direct Date Adjustments**:
   - Click on any bar to quickly modify its start or end date, immediately updated in SQLite.
 
-### 4. Built-in Deep Work Focus Timer
+### 4. Gamified Stats, Unbroken Focus & Achievements
+- **Leveling & XP Engine**:
+  - Earn XP by completing daily habits (`+25 XP`), finishing work tasks (`+30 XP`), tackling urgent items (`+50 XP`), and logging focus time (`+2 XP/min`).
+  - Progressive ranks: *Novice Planner* &rarr; *Apprentice of Flow* &rarr; *Focus Disciple* &rarr; *Deep Work Master* &rarr; *Horizon Grandmaster*.
+- **Unbroken Focus Mode Records**:
+  - Track longest single unbroken deep work session (e.g. 90m without interruption) and total focus hours.
+- **Longest Streak Records**:
+  - All-time unbroken streak tracking across daily habits and routines with flame badges (🔥).
+- **Achievements & Badges Collection**:
+  - Unlock collectible badges: *First Flow*, *Deep Diver*, *Focus Centurion*, *Iron Will*, *Streak Master*, *Crisis Averted*, *Green Thumb*, and *Task Crusher*.
+
+### 5. Built-in Deep Work Focus Timer
 - Floating Pomodoro / Focus session modal.
 - Presets: **25m Focus**, **50m Deep Work**, **5m Break**, **15m Break**.
 - Circular SVG progress countdown, celebration effects, and automatic logging to SQLite `focus_sessions`.
 
-### 5. Edge AI & Natural Language Quick-Capture (`Cmd+K`)
+### 6. Edge AI & Natural Language Quick-Capture (`Cmd+K`)
 - Private, zero-latency on-device natural language parser:
   - *"Doctor's appointment tomorrow at 10:30am for 45 mins"* &rarr; `APPOINTMENT`, tomorrow, 10:30 AM, 45m.
   - *"Tend the garden at 5pm"* &rarr; `CHORE`, 5:00 PM, 45m.
@@ -68,7 +79,7 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
   - *"Reply to Sarah about contract"* &rarr; `COMMUNICATION`, scope `WORK`.
 - Optional integration with local LLM daemons (Ollama / LM Studio) at `http://localhost:11434/v1`.
 
-### 6. Cross-Platform & Lightweight SQLite Engine
+### 7. Cross-Platform & Lightweight SQLite Engine
 - **Target Platforms**: **Android**, **iOS**, **macOS**, and **Windows** via **Tauri 2.0**.
 - **Lightweight Database**: Native **SQLite** via `tauri-plugin-sql`, with in-browser/dev SQLite WASM fallback for rapid web preview.
 
@@ -82,7 +93,7 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Icons & Effects**: Lucide Icons, Canvas Confetti
 - **Date Engine**: date-fns v4
 - **Database**: SQLite (`tauri-plugin-sql` + `sql.js` WASM fallback)
-- **Testing**: Vitest + React Testing Library (26 passing unit/integration tests)
+- **Testing**: Vitest + React Testing Library (30 passing unit/integration tests)
 
 ---
 

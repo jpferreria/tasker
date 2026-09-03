@@ -82,3 +82,30 @@ export interface AIQuickCaptureResult {
   recurringRule?: 'DAILY' | 'WEEKDAYS' | 'WEEKLY' | null;
   confidence?: number;
 }
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string; // Emoji or Lucide icon name
+  category: 'STREAK' | 'FOCUS' | 'VELOCITY' | 'SPECIAL';
+  unlocked: boolean;
+  unlockedAt?: string;
+  progress: number;
+  target: number;
+}
+
+export interface UserStats {
+  totalXp: number;
+  level: number;
+  levelTitle: string;
+  currentLevelXp: number;
+  nextLevelXp: number;
+  longestStreak: number;
+  currentStreak: number;
+  totalFocusMinutes: number;
+  longestSingleFocusMinutes: number;
+  completedTasksCount: number;
+  achievements: Achievement[];
+}
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Horizon, TaskScope, Task, HabitWithStreak, Goal } from './types';
+import { Horizon, TaskScope, Task, HabitWithStreak, Goal, FocusSession } from './types';
 import { Repository } from './db/repository';
 import { Navbar } from './components/layout/Navbar';
 import { DailyView } from './components/daily/DailyView';
@@ -10,6 +10,8 @@ import { GanttView } from './components/gantt/GanttView';
 import { QuickAddModal } from './components/ai/QuickAddModal';
 import { FocusTimerModal } from './components/focus/FocusTimerModal';
 import { GoalModal } from './components/goals/GoalModal';
+import { StatsModal } from './components/stats/StatsModal';
+import { calculateUserStats } from './utils/gamification';
 import { format, parseISO } from 'date-fns';
 import { Loader2, Sparkles, Command } from 'lucide-react';
 
@@ -25,11 +27,13 @@ export const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [habits, setHabits] = useState<HabitWithStreak[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [focusSessions, setFocusSessions] = useState<FocusSession[]>([]);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [quickAddSlotTime, setQuickAddSlotTime] = useState<string>('');
   const [isFocusTimerOpen, setIsFocusTimerOpen] = useState(false);
+  const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [selectedFocusTask, setSelectedFocusTask] = useState<Task | null>(null);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [goalModalHorizon, setGoalModalHorizon] = useState<'YEARLY' | 'MONTHLY'>('YEARLY');
@@ -40,10 +44,12 @@ export const App: React.FC = () => {
       const allTasks = await repository.getTasks();
       const allHabits = await repository.getHabitsWithStreaks(dateStr);
       const allGoals = await repository.getGoals();
+      const allSessions = await repository.getFocusSessions();
 
       setTasks(allTasks);
       setHabits(allHabits);
       setGoals(allGoals);
+      setFocusSessions(allSessions);
     } catch (err) {
       console.error('Error refreshing data from SQLite:', err);
     }
@@ -199,6 +205,9 @@ export const App: React.FC = () => {
     );
   }
 
+  // Gamified User Stats
+  const userStats = calculateUserStats(tasks, habits, focusSessions);
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-slate-950">
       {/* Top Sticky Navbar */}
@@ -215,6 +224,8 @@ export const App: React.FC = () => {
           setSelectedFocusTask(null);
           setIsFocusTimerOpen(true);
         }}
+        onOpenStats={() => setIsStatsOpen(true)}
+        userStats={userStats}
         selectedDateStr={selectedDateStr}
         onDateChange={setSelectedDateStr}
       />
@@ -319,6 +330,12 @@ export const App: React.FC = () => {
         onClose={() => setIsGoalModalOpen(false)}
         defaultHorizon={goalModalHorizon}
         onSave={handleCreateGoal}
+      />
+
+      <StatsModal
+        isOpen={isStatsOpen}
+        onClose={() => setIsStatsOpen(false)}
+        stats={userStats}
       />
     </div>
   );

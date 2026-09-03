@@ -1,5 +1,5 @@
 import React from 'react';
-import { Horizon, TaskScope } from '../../types';
+import { Horizon, TaskScope, UserStats } from '../../types';
 import {
   CalendarDays,
   CalendarRange,
@@ -11,7 +11,8 @@ import {
   Briefcase,
   User,
   LayoutGrid,
-  BarChart3
+  BarChart3,
+  Trophy
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -21,6 +22,8 @@ interface NavbarProps {
   onScopeChange: (scope: 'ALL' | TaskScope) => void;
   onOpenQuickAdd: () => void;
   onOpenFocusTimer: () => void;
+  onOpenStats?: () => void;
+  userStats?: UserStats;
   selectedDateStr: string;
   onDateChange: (dateStr: string) => void;
 }
@@ -32,6 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScopeChange,
   onOpenQuickAdd,
   onOpenFocusTimer,
+  onOpenStats,
+  userStats,
   selectedDateStr,
   onDateChange,
 }) => {
@@ -117,6 +122,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Work</span>
             </button>
           </div>
+
+          {/* Gamified Level & XP Pill */}
+          {userStats && onOpenStats && (
+            <button
+              onClick={onOpenStats}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 text-amber-300 text-xs font-semibold rounded-xl transition shadow-sm"
+              title={`Level ${userStats.level}: ${userStats.levelTitle} (${userStats.totalXp} XP) - Click to view Achievements & Stats`}
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-mono">Lvl {userStats.level}</span>
+            </button>
+          )}
 
           {/* Focus Timer Launcher */}
           <button
