@@ -6,6 +6,7 @@ import { DailyView } from './components/daily/DailyView';
 import { WeeklyCalendarView } from './components/calendar/WeeklyCalendarView';
 import { MonthlyCalendarView } from './components/calendar/MonthlyCalendarView';
 import { YearlyCalendarView } from './components/calendar/YearlyCalendarView';
+import { GanttView } from './components/gantt/GanttView';
 import { QuickAddModal } from './components/ai/QuickAddModal';
 import { FocusTimerModal } from './components/focus/FocusTimerModal';
 import { GoalModal } from './components/goals/GoalModal';
@@ -80,6 +81,8 @@ export const App: React.FC = () => {
         setCurrentHorizon('MONTHLY');
       } else if (e.key === '4') {
         setCurrentHorizon('YEARLY');
+      } else if (e.key === '5') {
+        setCurrentHorizon('GANTT');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -175,6 +178,18 @@ export const App: React.FC = () => {
     await refreshData(repo, selectedDateStr);
   };
 
+  const handleUpdateGoalDates = async (goalId: string, startDate: string, endDate: string) => {
+    if (!repo) return;
+    await repo.updateGoalDates(goalId, startDate, endDate);
+    await refreshData(repo, selectedDateStr);
+  };
+
+  const handleUpdateTaskDates = async (taskId: string, startDate: string, endDate: string) => {
+    if (!repo) return;
+    await repo.updateTaskDates(taskId, startDate, endDate);
+    await refreshData(repo, selectedDateStr);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-100 space-y-3">
@@ -261,6 +276,24 @@ export const App: React.FC = () => {
               setCurrentHorizon('MONTHLY');
             }}
             onBatchCreateTasks={handleBatchCreateTasks}
+          />
+        )}
+
+        {currentHorizon === 'GANTT' && (
+          <GanttView
+            goals={goals}
+            tasks={filteredTasks}
+            onUpdateGoalProgress={handleUpdateGoalProgress}
+            onUpdateGoalDates={handleUpdateGoalDates}
+            onUpdateTaskDates={handleUpdateTaskDates}
+            onAddGoal={h => {
+              setGoalModalHorizon(h);
+              setIsGoalModalOpen(true);
+            }}
+            onAddTask={() => {
+              setQuickAddSlotTime('');
+              setIsQuickAddOpen(true);
+            }}
           />
         )}
       </main>

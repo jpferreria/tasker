@@ -36,12 +36,26 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
   - Quarterly milestones (Q1–Q4) with progress sliders.
   - **Edge AI Goal Decomposition**: Breaks down high-level yearly goals into monthly milestones and daily micro-habits.
 
-### 3. Built-in Deep Work Focus Timer
+### 3. Interactive Gantt-Like Roadmap View (Goals & Long-Running Plans)
+- **Visual Timeline Bar Chart**:
+  - Goals and long-running multi-day plans are rendered as horizontal bars with start and end dates.
+  - Interactive progress fills (0% – 100%) and category color styling.
+  - Collapsible hierarchy to view linked child tasks directly beneath parent goals.
+- **Adjustable Zoom Levels**:
+  - **Weeks**: High-resolution view of weekly milestones.
+  - **Months**: Year-at-a-glance monthly layout.
+  - **Quarters**: High-level strategic roadmap (Q1 – Q4).
+- **Today Indicator Line**:
+  - Live vertical marker indicating today's exact position across the timeline.
+- **Direct Date Adjustments**:
+  - Click on any bar to quickly modify its start or end date, immediately updated in SQLite.
+
+### 4. Built-in Deep Work Focus Timer
 - Floating Pomodoro / Focus session modal.
 - Presets: **25m Focus**, **50m Deep Work**, **5m Break**, **15m Break**.
 - Circular SVG progress countdown, celebration effects, and automatic logging to SQLite `focus_sessions`.
 
-### 4. Edge AI & Natural Language Quick-Capture (`Cmd+K`)
+### 5. Edge AI & Natural Language Quick-Capture (`Cmd+K`)
 - Private, zero-latency on-device natural language parser:
   - *"Doctor's appointment tomorrow at 10:30am for 45 mins"* &rarr; `APPOINTMENT`, tomorrow, 10:30 AM, 45m.
   - *"Tend the garden at 5pm"* &rarr; `CHORE`, 5:00 PM, 45m.
@@ -50,7 +64,7 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
   - *"Reply to Sarah about contract"* &rarr; `COMMUNICATION`, scope `WORK`.
 - Optional integration with local LLM daemons (Ollama / LM Studio) at `http://localhost:11434/v1`.
 
-### 5. Cross-Platform & Lightweight SQLite Engine
+### 6. Cross-Platform & Lightweight SQLite Engine
 - **Target Platforms**: **Android**, **iOS**, **macOS**, and **Windows** via **Tauri 2.0**.
 - **Lightweight Database**: Native **SQLite** via `tauri-plugin-sql`, with in-browser/dev SQLite WASM fallback for rapid web preview.
 
@@ -64,7 +78,7 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Icons & Effects**: Lucide Icons, Canvas Confetti
 - **Date Engine**: date-fns v4
 - **Database**: SQLite (`tauri-plugin-sql` + `sql.js` WASM fallback)
-- **Testing**: Vitest + React Testing Library (18 passing unit/integration tests)
+- **Testing**: Vitest + React Testing Library (26 passing unit/integration tests)
 
 ---
 
@@ -121,6 +135,7 @@ npm run build
 | `2` | Weekly Calendar Grid |
 | `3` | Monthly Calendar Grid |
 | `4` | Yearly Horizon View |
+| `5` | Roadmap (Gantt View) |
 
 ---
 

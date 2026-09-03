@@ -1,4 +1,4 @@
-export type Horizon = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+export type Horizon = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'GANTT';
 
 export type TaskType = 
   | 'HABIT'          // Daily goals / recurring habits (e.g. reading a book, workout)
@@ -39,6 +39,8 @@ export interface Task {
   status: TaskStatus;
   scheduledDate?: string;     // YYYY-MM-DD
   scheduledTime?: string;     // HH:MM (24h)
+  startDate?: string;         // YYYY-MM-DD (for long-running tasks)
+  endDate?: string;           // YYYY-MM-DD (for long-running tasks)
   durationMinutes: number;    // e.g., 30, 45, 60
   recurringRule?: 'DAILY' | 'WEEKDAYS' | 'WEEKLY' | 'MONTHLY' | null;
   parentGoalId?: string;

@@ -57,8 +57,8 @@ export class Repository {
     const createdAt = new Date().toISOString();
 
     await this.db.execute(
-      `INSERT INTO tasks (id, title, description, type, scope, priority, status, scheduled_date, scheduled_time, duration_minutes, recurring_rule, parent_goal_id, created_at, completed_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tasks (id, title, description, type, scope, priority, status, scheduled_date, scheduled_time, start_date, end_date, duration_minutes, recurring_rule, parent_goal_id, created_at, completed_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         id,
         data.title,
@@ -69,6 +69,8 @@ export class Repository {
         data.status || 'TODO',
         data.scheduledDate || null,
         data.scheduledTime || null,
+        data.startDate || null,
+        data.endDate || null,
         data.durationMinutes || 30,
         data.recurringRule || null,
         data.parentGoalId || null,
@@ -96,6 +98,8 @@ export class Repository {
     if (updates.status !== undefined) { fields.push('status = ?'); params.push(updates.status); }
     if (updates.scheduledDate !== undefined) { fields.push('scheduled_date = ?'); params.push(updates.scheduledDate); }
     if (updates.scheduledTime !== undefined) { fields.push('scheduled_time = ?'); params.push(updates.scheduledTime); }
+    if (updates.startDate !== undefined) { fields.push('start_date = ?'); params.push(updates.startDate); }
+    if (updates.endDate !== undefined) { fields.push('end_date = ?'); params.push(updates.endDate); }
     if (updates.durationMinutes !== undefined) { fields.push('duration_minutes = ?'); params.push(updates.durationMinutes); }
     if (updates.recurringRule !== undefined) { fields.push('recurring_rule = ?'); params.push(updates.recurringRule); }
     if (updates.completedAt !== undefined) { fields.push('completed_at = ?'); params.push(updates.completedAt); }
@@ -302,6 +306,14 @@ export class Repository {
     }));
   }
 
+  async updateGoalDates(id: string, startDate: string, endDate: string): Promise<void> {
+    await this.db.execute('UPDATE goals SET start_date = ?, end_date = ? WHERE id = ?', [startDate, endDate, id]);
+  }
+
+  async updateTaskDates(id: string, startDate: string, endDate: string): Promise<void> {
+    await this.db.execute('UPDATE tasks SET start_date = ?, end_date = ? WHERE id = ?', [startDate, endDate, id]);
+  }
+
   private mapTaskRow(row: any): Task {
     return {
       id: row.id,
@@ -313,6 +325,8 @@ export class Repository {
       status: row.status,
       scheduledDate: row.scheduled_date || undefined,
       scheduledTime: row.scheduled_time || undefined,
+      startDate: row.start_date || undefined,
+      endDate: row.end_date || undefined,
       durationMinutes: Number(row.duration_minutes || 30),
       recurringRule: row.recurring_rule || null,
       parentGoalId: row.parent_goal_id || undefined,

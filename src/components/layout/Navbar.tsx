@@ -10,7 +10,8 @@ import {
   Plus,
   Briefcase,
   User,
-  LayoutGrid
+  LayoutGrid,
+  BarChart3
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -60,6 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             { id: 'WEEKLY', label: 'Weekly Grid', icon: CalendarRange },
             { id: 'MONTHLY', label: 'Monthly Cal', icon: Calendar },
             { id: 'YEARLY', label: 'Yearly Horizon', icon: LayoutGrid },
+            { id: 'GANTT', label: 'Roadmap (Gantt)', icon: BarChart3 },
           ].map(tab => {
             const Icon = tab.icon;
             const active = currentHorizon === tab.id;

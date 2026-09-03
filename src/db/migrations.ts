@@ -29,6 +29,8 @@ export async function runMigrations(db: DatabaseClient): Promise<void> {
       status TEXT CHECK(status IN ('TODO', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')) DEFAULT 'TODO',
       scheduled_date TEXT,
       scheduled_time TEXT,
+      start_date TEXT,
+      end_date TEXT,
       duration_minutes INTEGER DEFAULT 30,
       recurring_rule TEXT,
       parent_goal_id TEXT,
@@ -36,6 +38,14 @@ export async function runMigrations(db: DatabaseClient): Promise<void> {
       completed_at TEXT
     );
   `);
+
+  // Migrate existing tables if missing columns
+  try {
+    await db.execute('ALTER TABLE tasks ADD COLUMN start_date TEXT;');
+  } catch {}
+  try {
+    await db.execute('ALTER TABLE tasks ADD COLUMN end_date TEXT;');
+  } catch {}
 
   // 3. Habit Logs table
   await db.execute(`
