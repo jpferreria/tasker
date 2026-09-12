@@ -40,4 +40,17 @@ describe('AISettingsModal Component', () => {
     expect(onClose).toHaveBeenCalled();
     expect(localAI.getConfig().model).toBe('qwen2.5');
   });
+
+  it('supports dialog accessibility attributes and closes on Escape key', () => {
+    const onClose = vi.fn();
+    render(<AISettingsModal isOpen={true} onClose={onClose} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toBeDefined();
+    expect(dialog.getAttribute('aria-modal')).toBe('true');
+    expect(dialog.getAttribute('aria-labelledby')).toBe('ai-settings-title');
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
+  });
 });

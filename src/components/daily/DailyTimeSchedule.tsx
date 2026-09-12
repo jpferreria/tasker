@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Task } from '../../types';
 import { getDailyHourSlots, calculateTimelinePosition, minutesToTimeString } from '../../utils/dateUtils';
 import { Calendar, Flame, CheckCircle, Clock, Plus, Sparkles, AlertCircle } from 'lucide-react';
@@ -20,6 +20,8 @@ export const DailyTimeSchedule: React.FC<DailyTimeScheduleProps> = ({
   onTaskFocus,
 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const scheduleContainerRef = useRef<HTMLDivElement>(null);
+  const hasAutoScrolledRef = useRef(false);
   const hourSlots = getDailyHourSlots(7, 22);
   const hourHeight = 64; // px per hour
   const startHour = 7;
@@ -40,6 +42,17 @@ export const DailyTimeSchedule: React.FC<DailyTimeScheduleProps> = ({
   const startMins = startHour * 60;
   const nowTop = ((nowTotalMins - startMins) / 60) * hourHeight;
   const showNowLine = isToday && nowHours >= startHour && nowHours <= 22;
+
+  // Auto-scroll timeline to current time on initial load (Modern Web scroll-target-on-load)
+  useEffect(() => {
+    if (showNowLine && scheduleContainerRef.current && !hasAutoScrolledRef.current) {
+      hasAutoScrolledRef.current = true;
+      scheduleContainerRef.current.scrollTo({
+        top: Math.max(0, nowTop - 180),
+        behavior: 'smooth',
+      });
+    }
+  }, [showNowLine, nowTop]);
 
   const getTypeStyle = (task: Task) => {
     switch (task.type) {
@@ -101,12 +114,13 @@ export const DailyTimeSchedule: React.FC<DailyTimeScheduleProps> = ({
       </div>
 
       {/* Schedule Container */}
-      <div className="relative mt-4 flex-1 overflow-y-auto max-h-[720px] pr-2">
+      <div ref={scheduleContainerRef} className="relative mt-4 flex-1 overflow-y-auto max-h-[720px] pr-2">
         {/* Current Time Indicator Line */}
         {showNowLine && (
           <div
+            id="current-time-marker"
             className="absolute left-14 right-0 z-30 flex items-center pointer-events-none transition-all duration-300"
-            style={{ top: `${nowTop}px` }}
+            style={{ top: `${nowTop}px`, scrollInitialTarget: 'nearest' as any }}
           >
             <div className="w-2.5 h-2.5 rounded-full bg-rose-500 -ml-1.5 ring-4 ring-rose-500/20 shadow-sm shadow-rose-500"></div>
             <div className="h-[2px] flex-1 bg-rose-500 shadow-sm shadow-rose-500"></div>

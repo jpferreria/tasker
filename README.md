@@ -95,6 +95,13 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Tauri 2.0 Capabilities**: Explicit capability definitions (`src-tauri/capabilities/default.json`) restricting window permissions to `core:default` and `sql:default`.
 - **SSRF & Network Boundary Protection**: Client-side validation ensuring AI daemon endpoints strictly resolve to loopback interfaces (`localhost`, `127.0.0.1`, `[::1]`).
 
+### 9. Modern Web Platform Best Practices
+- **View Transitions API**: Smooth progressive transitions across horizon switching (`Daily`, `Weekly`, `Monthly`, `Yearly`, `Roadmap`) with full `prefers-reduced-motion` compliance.
+- **Scroll-Target-on-Load**: Automatically centers the active hourly slot and live time line on initial mount.
+- **Modern Standard CSS Scrollbars**: Unified `scrollbar-width: thin` and `scrollbar-color` matching the slate dark palette across Windows, Linux, and macOS.
+- **Dialog Accessibility (WAI-ARIA)**: Full `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, click-outside dismiss, and ESC keyboard handling across all modals.
+- **WASM Resource Prioritization**: High-priority WebAssembly preloading in `index.html` for instant database initialization.
+
 ---
 
 ## Tech Stack
@@ -105,7 +112,7 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Icons & Effects**: Lucide Icons, Canvas Confetti
 - **Date Engine**: date-fns v4
 - **Database**: SQLite (`tauri-plugin-sql` + `sql.js` WASM vendored locally)
-- **Testing**: Vitest + React Testing Library (34 passing unit/integration tests across 9 test suites)
+- **Testing**: Vitest + React Testing Library (35 passing unit/integration tests across 9 test suites)
 
 ---
 

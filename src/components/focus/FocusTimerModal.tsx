@@ -66,11 +66,31 @@ export const FocusTimerModal: React.FC<FocusTimerModalProps> = ({
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const progressPercent = Math.max(0, Math.min(100, ((totalSeconds - secondsRemaining) / totalSeconds) * 100));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative flex flex-col items-center">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="focus-modal-title"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative flex flex-col items-center"
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -81,7 +101,7 @@ export const FocusTimerModal: React.FC<FocusTimerModalProps> = ({
         </button>
 
         {/* Header */}
-        <div className="flex items-center gap-2 mb-1 text-emerald-400 font-semibold tracking-wide text-xs uppercase">
+        <div id="focus-modal-title" className="flex items-center gap-2 mb-1 text-emerald-400 font-semibold tracking-wide text-xs uppercase">
           <Flame className="w-4 h-4" />
           <span>Deep Focus Mode</span>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserStats, Achievement } from '../../types';
 import {
   Trophy,
@@ -23,6 +23,17 @@ interface StatsModalProps {
 export const StatsModal: React.FC<StatsModalProps> = ({ isOpen, onClose, stats }) => {
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const xpPercent = Math.min(100, Math.max(0, (stats.currentLevelXp / stats.nextLevelXp) * 100));
@@ -34,8 +45,17 @@ export const StatsModal: React.FC<StatsModalProps> = ({ isOpen, onClose, stats }
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="stats-modal-title"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Modal Header */}
         <div className="p-6 border-b border-slate-800 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-amber-950/20 relative">
           <button
@@ -54,7 +74,7 @@ export const StatsModal: React.FC<StatsModalProps> = ({ isOpen, onClose, stats }
                 <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   Level {stats.level}
                 </span>
-                <h2 className="text-lg font-bold text-slate-100">{stats.levelTitle}</h2>
+                <h2 id="stats-modal-title" className="text-lg font-bold text-slate-100">{stats.levelTitle}</h2>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
                 {stats.totalXp.toLocaleString()} Total XP earned

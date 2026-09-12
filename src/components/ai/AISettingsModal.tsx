@@ -38,6 +38,17 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const isLoopback = isLoopbackEndpoint(config.endpoint);
@@ -69,8 +80,17 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
   const modelPresets = ['llama3.2', 'mistral', 'qwen2.5', 'smollm', 'deepseek-r1:1.5b'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ai-settings-title"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
           <div className="flex items-center gap-3">
@@ -78,7 +98,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
               <Bot className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-100">Local AI Engine Settings</h2>
+              <h2 id="ai-settings-title" className="text-base font-bold text-slate-100">Local AI Engine Settings</h2>
               <p className="text-xs text-slate-400">Configure on-device & local LLM daemons</p>
             </div>
           </div>

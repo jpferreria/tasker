@@ -74,7 +74,18 @@ export const App: React.FC = () => {
     init();
   }, []);
 
-  // Keyboard Shortcuts (Cmd+K, 1-4)
+  // View Transitions API progressive enhancement
+  const switchHorizon = useCallback((horizon: Horizon) => {
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      (document as any).startViewTransition(() => {
+        setCurrentHorizon(horizon);
+      });
+    } else {
+      setCurrentHorizon(horizon);
+    }
+  }, []);
+
+  // Keyboard Shortcuts (Cmd+K, 1-5)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -84,20 +95,20 @@ export const App: React.FC = () => {
       } else if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       } else if (e.key === '1') {
-        setCurrentHorizon('DAILY');
+        switchHorizon('DAILY');
       } else if (e.key === '2') {
-        setCurrentHorizon('WEEKLY');
+        switchHorizon('WEEKLY');
       } else if (e.key === '3') {
-        setCurrentHorizon('MONTHLY');
+        switchHorizon('MONTHLY');
       } else if (e.key === '4') {
-        setCurrentHorizon('YEARLY');
+        switchHorizon('YEARLY');
       } else if (e.key === '5') {
-        setCurrentHorizon('GANTT');
+        switchHorizon('GANTT');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [switchHorizon]);
 
   // Filter tasks based on selected scope
   const filteredTasks = tasks.filter(t => {
@@ -156,7 +167,7 @@ export const App: React.FC = () => {
   const handleSelectDayFromMonthly = (dateStr: string) => {
     setSelectedDateStr(dateStr);
     setReferenceDate(parseISO(dateStr));
-    setCurrentHorizon('DAILY');
+    switchHorizon('DAILY');
   };
 
   const handleUpdateGoalProgress = async (goalId: string, newProgress: number) => {
@@ -217,7 +228,7 @@ export const App: React.FC = () => {
       {/* Top Sticky Navbar */}
       <Navbar
         currentHorizon={currentHorizon}
-        onHorizonChange={setCurrentHorizon}
+        onHorizonChange={switchHorizon}
         activeScope={activeScope}
         onScopeChange={setActiveScope}
         onOpenQuickAdd={() => {
@@ -261,7 +272,7 @@ export const App: React.FC = () => {
             onSelectDate={dateStr => {
               setSelectedDateStr(dateStr);
               setReferenceDate(parseISO(dateStr));
-              setCurrentHorizon('DAILY');
+              switchHorizon('DAILY');
             }}
             onSlotClick={handleWeeklySlotClick}
             onNavigateWeek={setReferenceDate}
@@ -290,7 +301,7 @@ export const App: React.FC = () => {
             onUpdateGoalProgress={handleUpdateGoalProgress}
             onSelectMonthForView={mDate => {
               setReferenceDate(mDate);
-              setCurrentHorizon('MONTHLY');
+              switchHorizon('MONTHLY');
             }}
             onBatchCreateTasks={handleBatchCreateTasks}
           />

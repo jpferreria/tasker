@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Goal, GoalCategory } from '../../types';
 import { Target, X, Check } from 'lucide-react';
 import { format } from 'date-fns';
@@ -43,14 +43,34 @@ export const GoalModal: React.FC<GoalModalProps> = ({
     onClose();
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative space-y-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="goal-modal-title"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative space-y-4"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
           <div className="flex items-center gap-2 text-amber-400">
             <Target className="w-5 h-5" />
-            <h3 className="text-base font-semibold text-slate-100">Create Goal / Milestone</h3>
+            <h3 id="goal-modal-title" className="text-base font-semibold text-slate-100">Create Goal / Milestone</h3>
           </div>
           <button
             onClick={onClose}

@@ -3,21 +3,42 @@
 @layer base {
   * {
     box-sizing: border-box;
+    /* Modern standard scrollbars */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
   }
   
-  /* Smooth custom scrollbars */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  /* Fallback for legacy WebKit */
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.4);
+    }
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
+
+  /* View Transitions API smooth animations */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.2);
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(148, 163, 184, 0.4);
+
+  /* Respect accessibility prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
   }
 }
