@@ -13,19 +13,102 @@ export const defaultAIConfig: LocalAIConfig = {
   enabled: false,
 };
 
+const AI_CONFIG_STORAGE_KEY = 'horizon_planner_ai_config';
+
+export function isLoopbackEndpoint(urlStr: string): boolean {
+  try {
+    const parsed = new URL(urlStr);
+    const host = parsed.hostname.toLowerCase();
+    return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+  } catch {
+    return false;
+  }
+}
+
 export class LocalAIEngine {
   private config: LocalAIConfig;
 
   constructor(config: Partial<LocalAIConfig> = {}) {
-    this.config = { ...defaultAIConfig, ...config };
+    let savedConfig: Partial<LocalAIConfig> = {};
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const item = window.localStorage.getItem(AI_CONFIG_STORAGE_KEY);
+        if (item) {
+          savedConfig = JSON.parse(item);
+        }
+      } catch (e) {
+        console.warn('Failed to load saved AI config:', e);
+      }
+    }
+    this.config = { ...defaultAIConfig, ...savedConfig, ...config };
   }
 
   updateConfig(updates: Partial<LocalAIConfig>) {
     this.config = { ...this.config, ...updates };
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        window.localStorage.setItem(AI_CONFIG_STORAGE_KEY, JSON.stringify(this.config));
+      } catch (e) {
+        console.warn('Failed to persist AI config to localStorage:', e);
+      }
+    }
   }
 
   getConfig(): LocalAIConfig {
     return { ...this.config };
+  }
+
+  /**
+   * Test connection to the configured Local LLM endpoint
+   */
+  async testConnection(): Promise<{ success: boolean; message: string; models?: string[] }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3500);
+
+    try {
+      new URL(this.config.endpoint);
+    } catch {
+      clearTimeout(timeout);
+      return { success: false, message: 'Invalid endpoint URL format' };
+    }
+
+    try {
+      const resp = await fetch(`${this.config.endpoint}/models`, {
+        method: 'GET',
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (!resp.ok) {
+        return {
+          success: false,
+          message: `Endpoint returned HTTP status ${resp.status} (${resp.statusText})`
+        };
+      }
+
+      const data = await resp.json();
+      let models: string[] = [];
+      if (Array.isArray(data?.data)) {
+        models = data.data.map((m: any) => m.id || m.name).filter(Boolean);
+      } else if (Array.isArray(data?.models)) {
+        models = data.models.map((m: any) => m.name || m.id).filter(Boolean);
+      }
+
+      const hasModel = models.length === 0 || models.some(m => m.toLowerCase().includes(this.config.model.toLowerCase()));
+      return {
+        success: true,
+        message: hasModel
+          ? `Connected! Model '${this.config.model}' is available.`
+          : `Connected! Notice: '${this.config.model}' not found in active models: ${models.slice(0, 3).join(', ')}`,
+        models,
+      };
+    } catch (err: any) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        return { success: false, message: 'Connection timed out after 3.5s. Is Ollama / LM Studio running?' };
+      }
+      return { success: false, message: `Could not reach ${this.config.endpoint}. Please verify local service is running.` };
+    }
   }
 
   /**

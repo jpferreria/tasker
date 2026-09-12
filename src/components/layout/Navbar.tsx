@@ -12,7 +12,8 @@ import {
   User,
   LayoutGrid,
   BarChart3,
-  Trophy
+  Trophy,
+  Bot
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -23,6 +24,8 @@ interface NavbarProps {
   onOpenQuickAdd: () => void;
   onOpenFocusTimer: () => void;
   onOpenStats?: () => void;
+  onOpenAISettings?: () => void;
+  isAIEnabled?: boolean;
   userStats?: UserStats;
   selectedDateStr: string;
   onDateChange: (dateStr: string) => void;
@@ -36,6 +39,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuickAdd,
   onOpenFocusTimer,
   onOpenStats,
+  onOpenAISettings,
+  isAIEnabled,
   userStats,
   selectedDateStr,
   onDateChange,
@@ -132,6 +137,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Trophy className="w-3.5 h-3.5 text-amber-400" />
               <span className="font-mono">Lvl {userStats.level}</span>
+            </button>
+          )}
+
+          {/* AI Settings Launcher */}
+          {onOpenAISettings && (
+            <button
+              onClick={onOpenAISettings}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 border rounded-xl text-xs font-medium transition shadow-sm ${
+                isAIEnabled
+                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-300'
+                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-400 hover:text-slate-300'
+              }`}
+              title={`Edge AI Engine: ${isAIEnabled ? 'Local LLM Active' : 'Deterministic Rule Fallback'} (Click to configure)`}
+            >
+              <Bot className={`w-3.5 h-3.5 ${isAIEnabled ? 'text-emerald-400' : 'text-slate-400'}`} />
+              <span className="hidden xl:inline">AI Config</span>
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isAIEnabled ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'
+                }`}
+              />
             </button>
           )}
 

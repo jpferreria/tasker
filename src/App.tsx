@@ -11,6 +11,8 @@ import { QuickAddModal } from './components/ai/QuickAddModal';
 import { FocusTimerModal } from './components/focus/FocusTimerModal';
 import { GoalModal } from './components/goals/GoalModal';
 import { StatsModal } from './components/stats/StatsModal';
+import { AISettingsModal } from './components/ai/AISettingsModal';
+import { localAI } from './ai/localAIClient';
 import { calculateUserStats } from './utils/gamification';
 import { format, parseISO } from 'date-fns';
 import { Loader2, Sparkles, Command } from 'lucide-react';
@@ -37,6 +39,8 @@ export const App: React.FC = () => {
   const [selectedFocusTask, setSelectedFocusTask] = useState<Task | null>(null);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [goalModalHorizon, setGoalModalHorizon] = useState<'YEARLY' | 'MONTHLY'>('YEARLY');
+  const [isAISettingsOpen, setIsAISettingsOpen] = useState(false);
+  const [isAIEnabled, setIsAIEnabled] = useState(() => localAI.getConfig().enabled);
 
   // Load Database & Data
   const refreshData = useCallback(async (repository: Repository, dateStr: string) => {
@@ -225,6 +229,8 @@ export const App: React.FC = () => {
           setIsFocusTimerOpen(true);
         }}
         onOpenStats={() => setIsStatsOpen(true)}
+        onOpenAISettings={() => setIsAISettingsOpen(true)}
+        isAIEnabled={isAIEnabled}
         userStats={userStats}
         selectedDateStr={selectedDateStr}
         onDateChange={setSelectedDateStr}
@@ -336,6 +342,12 @@ export const App: React.FC = () => {
         isOpen={isStatsOpen}
         onClose={() => setIsStatsOpen(false)}
         stats={userStats}
+      />
+
+      <AISettingsModal
+        isOpen={isAISettingsOpen}
+        onClose={() => setIsAISettingsOpen(false)}
+        onConfigSaved={() => setIsAIEnabled(localAI.getConfig().enabled)}
       />
     </div>
   );

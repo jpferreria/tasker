@@ -96,9 +96,9 @@ export async function getDatabase(): Promise<DatabaseClient> {
     }
   }
 
-  // Web / Test / Dev SQLite WASM Engine
+  // Web / Test / Dev SQLite WASM Engine (vendored locally for offline support & security)
   const SQL = await initSqlJs({
-    locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+    locateFile: () => '/sql-wasm.wasm'
   });
 
   let loadedDb: SqlJsDatabase | null = null;

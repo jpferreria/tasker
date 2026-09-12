@@ -77,11 +77,23 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
   - *"Read a book for 20 mins daily"* &rarr; `HABIT`, recurring `DAILY`.
   - *"Immediate: Fix critical checkout bug for client"* &rarr; `TASK`, priority `IMMEDIATE`, scope `WORK`.
   - *"Reply to Sarah about contract"* &rarr; `COMMUNICATION`, scope `WORK`.
-- Optional integration with local LLM daemons (Ollama / LM Studio) at `http://localhost:11434/v1`.
+- **Local AI Daemon Acceleration & Settings**:
+  - Optional integration with local LLM daemons (Ollama / LM Studio) at `http://localhost:11434/v1`.
+  - Built-in **AI Engine Settings Modal** (`Navbar -> AI Config`):
+    - Live endpoint connection tester and model availability diagnostics.
+    - Quick-select presets (`llama3.2`, `mistral`, `qwen2.5`, `smollm`, `deepseek-r1:1.5b`).
+    - Persistent configuration in local storage.
+    - Graceful automatic fallback to on-device deterministic regex engine when daemons are offline.
 
-### 7. Cross-Platform & Lightweight SQLite Engine
+### 7. Cross-Platform & 100% Offline SQLite Engine
 - **Target Platforms**: **Android**, **iOS**, **macOS**, and **Windows** via **Tauri 2.0**.
-- **Lightweight Database**: Native **SQLite** via `tauri-plugin-sql`, with in-browser/dev SQLite WASM fallback for rapid web preview.
+- **Dual SQLite Architecture**: Native **SQLite** via `tauri-plugin-sql`, paired with an in-browser/dev SQLite WASM fallback.
+- **100% Offline & Vendored WASM**: `sql-wasm.wasm` is vendored directly within `public/`, eliminating external CDN dependencies and ensuring total privacy and offline functionality.
+
+### 8. Security Hardening & Least-Privilege Sandbox
+- **Strict Content Security Policy (CSP)**: Hardened `tauri.conf.json` enforcing `default-src 'self'`, `wasm-unsafe-eval`, and restricting network sockets strictly to verified local loopback endpoints.
+- **Tauri 2.0 Capabilities**: Explicit capability definitions (`src-tauri/capabilities/default.json`) restricting window permissions to `core:default` and `sql:default`.
+- **SSRF & Network Boundary Protection**: Client-side validation ensuring AI daemon endpoints strictly resolve to loopback interfaces (`localhost`, `127.0.0.1`, `[::1]`).
 
 ---
 
@@ -92,8 +104,8 @@ Designed to bridge long-term vision (**Yearly/Monthly goals**) with ground-level
 - **Styling**: Tailwind CSS v4
 - **Icons & Effects**: Lucide Icons, Canvas Confetti
 - **Date Engine**: date-fns v4
-- **Database**: SQLite (`tauri-plugin-sql` + `sql.js` WASM fallback)
-- **Testing**: Vitest + React Testing Library (30 passing unit/integration tests)
+- **Database**: SQLite (`tauri-plugin-sql` + `sql.js` WASM vendored locally)
+- **Testing**: Vitest + React Testing Library (34 passing unit/integration tests across 9 test suites)
 
 ---
 

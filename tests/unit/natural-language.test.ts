@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LocalAIEngine } from '../../src/ai/localAIClient';
+import { LocalAIEngine, isLoopbackEndpoint } from '../../src/ai/localAIClient';
 import { format, addDays } from 'date-fns';
 
 describe('LocalAIEngine NLP Parser', () => {
@@ -47,5 +47,23 @@ describe('LocalAIEngine NLP Parser', () => {
     expect(res.type).toBe('FOCUS_BLOCK');
     expect(res.durationMinutes).toBe(90);
     expect(res.scheduledTime).toBe('14:00');
+  });
+
+  it('should correctly identify loopback endpoints', () => {
+    expect(isLoopbackEndpoint('http://localhost:11434/v1')).toBe(true);
+    expect(isLoopbackEndpoint('http://127.0.0.1:11434/v1')).toBe(true);
+    expect(isLoopbackEndpoint('http://[::1]:11434/v1')).toBe(true);
+    expect(isLoopbackEndpoint('http://api.openai.com/v1')).toBe(false);
+    expect(isLoopbackEndpoint('https://example.com')).toBe(false);
+    expect(isLoopbackEndpoint('not-a-url')).toBe(false);
+  });
+
+  it('should manage configuration updates properly', () => {
+    const customEngine = new LocalAIEngine({ enabled: false });
+    expect(customEngine.getConfig().enabled).toBe(false);
+
+    customEngine.updateConfig({ enabled: true, model: 'mistral' });
+    expect(customEngine.getConfig().enabled).toBe(true);
+    expect(customEngine.getConfig().model).toBe('mistral');
   });
 });
